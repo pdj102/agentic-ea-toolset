@@ -1,5 +1,22 @@
 import { useState, useRef } from "react";
 
+const DEV_MODE = new URLSearchParams(window.location.search).get("dev") === "true";
+
+const DEV_RESULTS = [
+  { rule_id: "R01", status: "pass", evidence: "# ADR-042: Use Event-Driven Integration for Engine Health Data", explanation: "The ADR has a clear, descriptive title that summarises the decision.", recommendation: "" },
+  { rule_id: "R02", status: "fail", evidence: "", explanation: "The context section does not clearly frame the problem as a question being decided.", recommendation: "Add an explicit problem statement at the start of the Context section, e.g. 'We need to decide how to...'." },
+  { rule_id: "R03", status: "pass", evidence: "We will adopt an event-driven integration pattern using a message broker (Apache Kafka)", explanation: "The decision is stated as a clear affirmative action.", recommendation: "" },
+  { rule_id: "R04", status: "pass", evidence: "Status: Accepted", explanation: "A valid status field is present.", recommendation: "" },
+  { rule_id: "R05", status: "pass", evidence: "Event-driven integration reduces latency from hours to seconds.", explanation: "The rationale section provides clear justification for the decision.", recommendation: "" },
+  { rule_id: "R06", status: "partial", evidence: "Polling API: Rejected due to latency...", explanation: "Alternatives are listed but rejection reasoning for some options is very brief.", recommendation: "Expand the rejection rationale for each alternative to include the specific criterion it failed against." },
+  { rule_id: "R07", status: "not_applicable", evidence: "", explanation: "No assumptions section is present; this advisory rule is not applicable to this ADR's format.", recommendation: "" },
+  { rule_id: "R08", status: "pass", evidence: "Consumers must handle out-of-order and duplicate events...", explanation: "Consequences and trade-offs are documented in sufficient detail.", recommendation: "" },
+  { rule_id: "R09", status: "partial", evidence: "Kafka operational expertise is currently limited", explanation: "One risk is identified but the risk register is incomplete — no likelihood or impact ratings.", recommendation: "Add likelihood and impact ratings to each risk, and list any mitigations that are still outstanding." },
+  { rule_id: "R10", status: "not_applicable", evidence: "", explanation: "No related ADRs or requirements are referenced; this advisory rule is not applicable.", recommendation: "" },
+  { rule_id: "R11", status: "fail", evidence: "", explanation: "No author or decision owner is identified in the document.", recommendation: "Add an 'Author' or 'Owner' field near the Status line identifying the person or role accountable for this decision." },
+  { rule_id: "R12", status: "partial", evidence: "PPS digital backbone", explanation: "Programme-specific acronyms are used without definition, which may confuse readers outside the programme.", recommendation: "Add a brief glossary or expand acronyms (e.g. PPS, TotalCare) on first use." },
+];
+
 const RULES = [
   { id: "R01", category: "Structure", severity: "mandatory", description: "The ADR must have a clearly identified title that summarises the decision." },
   { id: "R02", category: "Structure", severity: "mandatory", description: "The ADR must state the problem context or the question being decided." },
@@ -143,6 +160,16 @@ function RuleRow({ rule, result }) {
               <div style={{ marginTop: 4, fontSize: 13, color: "#374151", lineHeight: 1.5 }}>{result.explanation}</div>
             </div>
           )}
+          {result.recommendation && (status === "fail" || status === "partial") && (
+            <div style={{ marginTop: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#92400e", textTransform: "uppercase" }}>Recommendation</span>
+              <div style={{
+                marginTop: 4, padding: "6px 10px", background: "#fffbeb",
+                borderRadius: 6, fontSize: 13, color: "#92400e", lineHeight: 1.5,
+                border: "1px solid #fcd34d"
+              }}>{result.recommendation}</div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -205,6 +232,10 @@ export default function App() {
   const abortRef = useRef(false);
 
   async function checkRule(doc, rule) {
+    if (DEV_MODE) {
+      await new Promise(r => setTimeout(r, 200));
+      return DEV_RESULTS[RULES.findIndex(r => r.id === rule.id)];
+    }
     const prompt = `You are a document quality checker evaluating an Architecture Decision Record (ADR).
 
 DOCUMENT:
@@ -219,7 +250,8 @@ Respond ONLY with a JSON object, no preamble, no markdown fences:
   "rule_id": "${rule.id}",
   "status": "pass" or "fail" or "partial" or "not_applicable",
   "evidence": "a short direct quote or reference from the document supporting your assessment, or empty string if not applicable",
-  "explanation": "one concise sentence explaining your assessment"
+  "explanation": "one concise sentence explaining your assessment",
+  "recommendation": "one concise actionable sentence on how to fix the gap, or empty string if status is pass or not_applicable"
 }`;
 
     const response = await fetch("/api/anthropic/v1/messages", {
@@ -320,7 +352,15 @@ Respond ONLY with a JSON object, no preamble, no markdown fences:
           fontSize: 18
         }}>⚖</div>
         <div>
-          <div style={{ fontWeight: 700, fontSize: 16, letterSpacing: "-0.3px" }}>ADR Compliance Checker</div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontWeight: 700, fontSize: 16, letterSpacing: "-0.3px" }}>ADR Compliance Checker</span>
+            {DEV_MODE && (
+              <span style={{
+                fontSize: 11, fontWeight: 700, padding: "1px 8px", borderRadius: 10,
+                background: "#fef3c7", color: "#92400e", border: "1px solid #fcd34d"
+              }}>DEV</span>
+            )}
+          </div>
           <div style={{ fontSize: 12, color: "#94a3b8" }}>Harness-driven rule-by-rule evaluation</div>
         </div>
         <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
