@@ -222,17 +222,20 @@ Respond ONLY with a JSON object, no preamble, no markdown fences:
   "explanation": "one concise sentence explaining your assessment"
 }`;
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
+    const response = await fetch("/api/anthropic/v1/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 1000,
         messages: [{ role: "user", content: prompt }],
       }),
     });
 
-    if (!response.ok) throw new Error(`API error ${response.status}`);
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(`API error ${response.status}: ${body?.error?.message ?? response.statusText}`);
+    }
     const data = await response.json();
     const text = data.content.map(b => b.text || "").join("").trim();
     const clean = text.replace(/```json|```/g, "").trim();
@@ -275,7 +278,7 @@ Respond ONLY with a JSON object, no preamble, no markdown fences:
           return next;
         });
         if (e.message.includes("API error")) {
-          setError("API error — check your connection or API key configuration.");
+          setError(`API error — ${e.message}`);
           break;
         }
       }
