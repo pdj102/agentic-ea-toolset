@@ -1,0 +1,15 @@
+{
+  "object_type": "integration",
+  "version": "1.0",
+  "fields": {
+    "id":               { "type": "string",  "required": true,  "pattern": "INT-[0-9]{4}" },
+    "name":             { "type": "string",  "required": true },
+    "pattern_type":     { "type": "enum",    "required": true,  "values": ["sync_api", "async_event", "batch_file", "database_link", "streaming"] },
+    "status":           { "type": "enum",    "required": true,  "values": ["approved", "conditional", "retired"] },
+    "source_app":       { "type": "string",  "required": true,  "items": "ref:application" },
+    "target_app":       { "type": "string",  "required": true,  "items": "ref:application" },
+    "technology_ref":   { "type": "string",  "required": true,  "items": "ref:technology" },
+    "data_entities_exchanged": { "type": "array", "required": false, "items": "ref:data_entity" },
+    "description":      { "type": "string",  "required": true }
+  }
+}

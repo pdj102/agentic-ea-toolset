@@ -1,0 +1,129 @@
+[
+  {
+    "id": "TECH-0001",
+    "name": "Python",
+    "category": "language",
+    "status": "approved",
+    "vendor": "Python Software Foundation",
+    "version_in_use": "3.11",
+    "approved_domains": [],
+    "description": "Primary backend programming language for all new RetailCo services."
+  },
+  {
+    "id": "TECH-0002",
+    "name": "PostgreSQL",
+    "category": "database",
+    "status": "approved",
+    "vendor": "PostgreSQL Global Development Group",
+    "version_in_use": "15",
+    "approved_domains": [],
+    "description": "Standard relational database for transactional workloads across all domains."
+  },
+  {
+    "id": "TECH-0003",
+    "name": "Apache Kafka",
+    "category": "platform",
+    "status": "approved",
+    "vendor": "Apache Software Foundation",
+    "version_in_use": "3.5",
+    "approved_domains": [],
+    "description": "Approved event streaming platform for async_event integration patterns."
+  },
+  {
+    "id": "TECH-0004",
+    "name": "React",
+    "category": "framework",
+    "status": "approved",
+    "vendor": "Meta",
+    "version_in_use": "18",
+    "approved_domains": [],
+    "description": "Approved frontend framework for web applications."
+  },
+  {
+    "id": "TECH-0005",
+    "name": "MongoDB",
+    "category": "database",
+    "status": "unapproved",
+    "vendor": "MongoDB Inc.",
+    "version_in_use": null,
+    "approved_domains": [],
+    "description": "Document database. Not approved for use at RetailCo — data governance requires relational or approved NoSQL stores only. Use PostgreSQL or Redis instead."
+  },
+  {
+    "id": "TECH-0006",
+    "name": "Redis",
+    "category": "database",
+    "status": "conditional",
+    "vendor": "Redis Ltd.",
+    "version_in_use": "7.2",
+    "approved_domains": ["Marketing", "Retail"],
+    "condition_notes": "Approved for caching and session storage only. Must not be used as primary data store. Restricted to Marketing and Retail domains.",
+    "description": "In-memory data store approved conditionally for caching and ephemeral data in Marketing and Retail domains."
+  },
+  {
+    "id": "TECH-0007",
+    "name": "Oracle Database",
+    "category": "database",
+    "status": "retired",
+    "vendor": "Oracle Corporation",
+    "lifecycle_end_date": "2023-12-31",
+    "approved_domains": [],
+    "description": "Oracle DB was used by legacy systems. Retired — all new development must use PostgreSQL."
+  },
+  {
+    "id": "TECH-0008",
+    "name": "AWS Lambda",
+    "category": "cloud_service",
+    "status": "approved",
+    "vendor": "Amazon Web Services",
+    "approved_domains": [],
+    "description": "Serverless compute approved for event-driven workloads and API integrations."
+  },
+  {
+    "id": "TECH-0009",
+    "name": "Elasticsearch",
+    "category": "platform",
+    "status": "conditional",
+    "vendor": "Elastic NV",
+    "version_in_use": "8.10",
+    "approved_domains": ["Data", "Retail"],
+    "condition_notes": "Approved for search and analytics use cases only. Not approved as primary operational data store. Restricted to Data and Retail domains.",
+    "description": "Search and analytics engine, conditionally approved for Data and Retail domains for search and BI workloads."
+  },
+  {
+    "id": "TECH-0010",
+    "name": "XML/SOAP",
+    "category": "protocol",
+    "status": "unapproved",
+    "approved_domains": [],
+    "description": "XML-based SOAP protocol. Not approved for new integrations — use REST/JSON or async_event patterns via Kafka."
+  },
+  {
+    "id": "TECH-0011",
+    "name": "FastAPI",
+    "category": "framework",
+    "status": "approved",
+    "vendor": "Sebastián Ramírez",
+    "version_in_use": "0.104",
+    "approved_domains": [],
+    "description": "Approved Python web framework for building REST APIs."
+  },
+  {
+    "id": "TECH-0012",
+    "name": "Docker",
+    "category": "tool",
+    "status": "approved",
+    "vendor": "Docker Inc.",
+    "approved_domains": [],
+    "description": "Container runtime. Approved as the standard deployment packaging tool."
+  },
+  {
+    "id": "TECH-0013",
+    "name": "Kubernetes",
+    "category": "platform",
+    "status": "approved",
+    "vendor": "CNCF",
+    "approved_domains": [],
+    "description": "Container orchestration platform. Approved for all production workloads."
+  }
+]

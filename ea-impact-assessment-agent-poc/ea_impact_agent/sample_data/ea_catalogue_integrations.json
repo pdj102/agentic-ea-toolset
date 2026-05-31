@@ -1,0 +1,112 @@
+[
+  {
+    "id": "INT-0001",
+    "name": "CRM to E-Commerce Customer Sync",
+    "pattern_type": "async_event",
+    "status": "approved",
+    "source_app": "APP-0001",
+    "target_app": "APP-0002",
+    "technology_ref": "TECH-0003",
+    "data_entities_exchanged": ["DE-0001"],
+    "description": "Publishes customer profile update events from CRM to E-Commerce Platform via Kafka to keep customer records synchronised."
+  },
+  {
+    "id": "INT-0002",
+    "name": "E-Commerce to Analytics Order Events",
+    "pattern_type": "async_event",
+    "status": "approved",
+    "source_app": "APP-0002",
+    "target_app": "APP-0004",
+    "technology_ref": "TECH-0003",
+    "data_entities_exchanged": ["DE-0002"],
+    "description": "Streams order placed and order completed events from E-Commerce Platform to Analytics Dashboard for real-time reporting."
+  },
+  {
+    "id": "INT-0003",
+    "name": "CRM to Analytics Contact Events",
+    "pattern_type": "async_event",
+    "status": "approved",
+    "source_app": "APP-0001",
+    "target_app": "APP-0004",
+    "technology_ref": "TECH-0003",
+    "data_entities_exchanged": ["DE-0001", "DE-0005"],
+    "description": "Publishes CRM contact and lead events to Analytics Dashboard for pipeline reporting."
+  },
+  {
+    "id": "INT-0004",
+    "name": "Mobile App to E-Commerce API",
+    "pattern_type": "sync_api",
+    "status": "approved",
+    "source_app": "APP-0005",
+    "target_app": "APP-0002",
+    "technology_ref": "TECH-0011",
+    "data_entities_exchanged": ["DE-0002", "DE-0003"],
+    "description": "REST API integration allowing the Mobile App to browse products, manage cart, and place orders via E-Commerce Platform."
+  },
+  {
+    "id": "INT-0005",
+    "name": "Warehouse to Inventory Batch Sync",
+    "pattern_type": "batch_file",
+    "status": "conditional",
+    "source_app": "APP-0009",
+    "target_app": "APP-0006",
+    "technology_ref": "TECH-0001",
+    "data_entities_exchanged": ["DE-0008"],
+    "description": "Nightly batch file transfer of stock levels from Warehouse Management System to legacy Inventory Management. Conditional — to be decommissioned when IMS is fully retired."
+  },
+  {
+    "id": "INT-0006",
+    "name": "E-Commerce to Payment Gateway",
+    "pattern_type": "sync_api",
+    "status": "approved",
+    "source_app": "APP-0002",
+    "target_app": "APP-0007",
+    "technology_ref": "TECH-0011",
+    "data_entities_exchanged": ["DE-0009"],
+    "description": "Synchronous REST API call from E-Commerce Platform to Payment Gateway Integration for payment authorisation at checkout."
+  },
+  {
+    "id": "INT-0007",
+    "name": "E-Commerce to Warehouse Order Fulfilment Events",
+    "pattern_type": "async_event",
+    "status": "approved",
+    "source_app": "APP-0002",
+    "target_app": "APP-0009",
+    "technology_ref": "TECH-0003",
+    "data_entities_exchanged": ["DE-0002", "DE-0011"],
+    "description": "Publishes order paid events from E-Commerce to Warehouse Management System to trigger pick, pack, and dispatch."
+  },
+  {
+    "id": "INT-0008",
+    "name": "E-Commerce to Promotions Service API",
+    "pattern_type": "sync_api",
+    "status": "approved",
+    "source_app": "APP-0002",
+    "target_app": "APP-0011",
+    "technology_ref": "TECH-0011",
+    "data_entities_exchanged": ["DE-0006"],
+    "description": "REST API call from E-Commerce to Promotions Service to validate and apply discount codes at checkout."
+  },
+  {
+    "id": "INT-0009",
+    "name": "Analytics to Data Lake Streaming",
+    "pattern_type": "streaming",
+    "status": "approved",
+    "source_app": "APP-0004",
+    "target_app": "APP-0031",
+    "technology_ref": "TECH-0003",
+    "data_entities_exchanged": ["DE-0007"],
+    "description": "Continuous streaming of analytics events from Analytics Dashboard to Data Lake Platform for long-term retention and ML feature store."
+  },
+  {
+    "id": "INT-0010",
+    "name": "Mobile App to CRM Customer API",
+    "pattern_type": "sync_api",
+    "status": "approved",
+    "source_app": "APP-0005",
+    "target_app": "APP-0001",
+    "technology_ref": "TECH-0011",
+    "data_entities_exchanged": ["DE-0001"],
+    "description": "REST API allowing the Mobile App to read and update customer profile information held in the CRM System."
+  }
+]

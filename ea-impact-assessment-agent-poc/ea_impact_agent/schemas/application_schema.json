@@ -1,0 +1,17 @@
+{
+  "object_type": "application",
+  "version": "1.0",
+  "fields": {
+    "id":               { "type": "string",  "required": true,  "pattern": "APP-[0-9]{4}" },
+    "name":             { "type": "string",  "required": true },
+    "alias":            { "type": "array",   "required": false, "items": "string" },
+    "status":           { "type": "enum",    "required": true,  "values": ["proposed", "live", "deprecated", "retired"] },
+    "owner_domain":     { "type": "string",  "required": true },
+    "technology_refs":  { "type": "array",   "required": true,  "items": "ref:technology", "min_items": 1 },
+    "data_entity_refs": { "type": "array",   "required": false, "items": "ref:data_entity" },
+    "integration_refs": { "type": "array",   "required": false, "items": "ref:integration" },
+    "lifecycle_end_date": { "type": "date",  "required": false },
+    "tags":             { "type": "array",   "required": false, "items": "string" },
+    "description":      { "type": "string",  "required": true }
+  }
+}

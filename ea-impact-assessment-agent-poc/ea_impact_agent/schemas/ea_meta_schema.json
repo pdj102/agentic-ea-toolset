@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "object_types": [
+    { "type": "application",  "schema_file": "application_schema.json",
+      "catalogue_file": "ea_catalogue_applications.json",  "id_prefix": "APP" },
+    { "type": "data_entity",  "schema_file": "data_entity_schema.json",
+      "catalogue_file": "ea_catalogue_data_entities.json", "id_prefix": "DE" },
+    { "type": "technology",   "schema_file": "technology_schema.json",
+      "catalogue_file": "ea_catalogue_technologies.json",  "id_prefix": "TECH" },
+    { "type": "integration",  "schema_file": "integration_schema.json",
+      "catalogue_file": "ea_catalogue_integrations.json",  "id_prefix": "INT" }
+  ]
+}

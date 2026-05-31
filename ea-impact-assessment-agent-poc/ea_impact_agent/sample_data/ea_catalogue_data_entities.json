@@ -1,0 +1,112 @@
+[
+  {
+    "id": "DE-0001",
+    "name": "Customer Profile",
+    "status": "active",
+    "owning_application": "APP-0001",
+    "data_classification": "confidential",
+    "owner_domain": "Sales",
+    "description": "Core customer master record including contact details, preferences, and account history.",
+    "tags": ["customer", "master-data", "pii"]
+  },
+  {
+    "id": "DE-0002",
+    "name": "Order History",
+    "status": "active",
+    "owning_application": "APP-0002",
+    "data_classification": "internal",
+    "owner_domain": "Retail",
+    "description": "Historical record of all customer orders including line items, pricing, fulfilment status, and returns.",
+    "tags": ["orders", "transactional"]
+  },
+  {
+    "id": "DE-0003",
+    "name": "Product Catalogue",
+    "status": "active",
+    "owning_application": "APP-0002",
+    "data_classification": "public",
+    "owner_domain": "Retail",
+    "description": "Master product catalogue containing SKUs, descriptions, pricing, categories, and availability.",
+    "tags": ["products", "master-data"]
+  },
+  {
+    "id": "DE-0005",
+    "name": "Sales Lead",
+    "status": "active",
+    "owning_application": "APP-0001",
+    "data_classification": "internal",
+    "owner_domain": "Sales",
+    "description": "Prospective customer or sales opportunity record tracked through the sales pipeline.",
+    "tags": ["sales", "crm"]
+  },
+  {
+    "id": "DE-0006",
+    "name": "Promotional Campaign",
+    "status": "active",
+    "owning_application": "APP-0011",
+    "data_classification": "internal",
+    "owner_domain": "Marketing",
+    "description": "Definition and rules for a promotional campaign including eligibility, discount type, and validity period.",
+    "tags": ["marketing", "promotions"]
+  },
+  {
+    "id": "DE-0007",
+    "name": "Analytics Event",
+    "status": "active",
+    "owning_application": "APP-0004",
+    "data_classification": "internal",
+    "owner_domain": "Data",
+    "description": "Structured event record capturing user actions and system events for analytics and reporting.",
+    "tags": ["analytics", "events"]
+  },
+  {
+    "id": "DE-0008",
+    "name": "Stock Level",
+    "status": "active",
+    "owning_application": "APP-0009",
+    "data_classification": "internal",
+    "owner_domain": "Operations",
+    "description": "Current and projected inventory stock levels per SKU per location.",
+    "tags": ["inventory", "operations"]
+  },
+  {
+    "id": "DE-0009",
+    "name": "Payment Transaction",
+    "status": "active",
+    "owning_application": "APP-0007",
+    "data_classification": "restricted",
+    "owner_domain": "Finance",
+    "description": "Payment authorisation and settlement record including masked card details, amount, and status.",
+    "tags": ["finance", "payments", "pci"]
+  },
+  {
+    "id": "DE-0010",
+    "name": "Employee Record",
+    "status": "active",
+    "owning_application": "APP-0008",
+    "data_classification": "restricted",
+    "owner_domain": "HR",
+    "description": "Employee master record including personal details, role, salary band, and employment history.",
+    "tags": ["hr", "employee", "pii"]
+  },
+  {
+    "id": "DE-0011",
+    "name": "Shipment",
+    "status": "active",
+    "owning_application": "APP-0009",
+    "data_classification": "internal",
+    "owner_domain": "Operations",
+    "description": "Outbound shipment record including carrier, tracking number, items, and delivery status.",
+    "tags": ["logistics", "fulfilment"]
+  },
+  {
+    "id": "DE-0012",
+    "name": "Supplier Record",
+    "status": "deprecated",
+    "owning_application": "APP-0009",
+    "data_classification": "internal",
+    "owner_domain": "Procurement",
+    "description": "Supplier master data including contact details, terms, and product categories. Ownership migrated from retired Supplier Portal.",
+    "tags": ["procurement", "supplier"]
+  }
+]

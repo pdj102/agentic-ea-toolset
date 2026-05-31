@@ -1,0 +1,14 @@
+{
+  "object_type": "data_entity",
+  "version": "1.0",
+  "fields": {
+    "id":               { "type": "string",  "required": true,  "pattern": "DE-[0-9]{4}" },
+    "name":             { "type": "string",  "required": true },
+    "status":           { "type": "enum",    "required": true,  "values": ["active", "deprecated", "retired"] },
+    "owning_application": { "type": "string", "required": true, "items": "ref:application", "comment": "Only one owning application permitted" },
+    "data_classification": { "type": "enum", "required": true,  "values": ["public", "internal", "confidential", "restricted"] },
+    "owner_domain":     { "type": "string",  "required": true },
+    "description":      { "type": "string",  "required": true },
+    "tags":             { "type": "array",   "required": false, "items": "string" }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "relationship_rules": [
+    {
+      "rule_id": "REL-001",
+      "description": "Applications may only integrate with live applications",
+      "source_type": "application",
+      "relationship": "INTEGRATES_WITH",
+      "target_type": "application",
+      "constraints": {
+        "source_status_allowed": ["proposed", "live"],
+        "target_status_allowed": ["live"],
+        "blocked_if_target_status": ["retired", "deprecated"]
+      }
+    },
+    {
+      "rule_id": "REL-002",
+      "description": "A data entity may only have one owning application",
+      "source_type": "application",
+      "relationship": "OWNS_DATA",
+      "target_type": "data_entity",
+      "constraints": {
+        "max_owners": 1
+      }
+    },
+    {
+      "rule_id": "REL-003",
+      "description": "Applications may only use approved or conditionally approved technologies",
+      "source_type": "application",
+      "relationship": "USES_TECHNOLOGY",
+      "target_type": "technology",
+      "constraints": {
+        "target_status_allowed": ["approved", "conditional"],
+        "blocked_if_target_status": ["unapproved", "retired"]
+      }
+    },
+    {
+      "rule_id": "REL-004",
+      "description": "Integrations must use an approved integration pattern",
+      "source_type": "integration",
+      "relationship": "USES_PATTERN",
+      "target_type": "integration",
+      "constraints": {
+        "source_status_allowed": ["approved", "conditional"],
+        "blocked_if_source_status": ["retired"]
+      }
+    },
+    {
+      "rule_id": "REL-005",
+      "description": "A proposed application must reference at least one approved technology",
+      "source_type": "application",
+      "relationship": "USES_TECHNOLOGY",
+      "target_type": "technology",
+      "constraints": {
+        "min_approved_refs": 1
+      }
+    }
+  ]
+}

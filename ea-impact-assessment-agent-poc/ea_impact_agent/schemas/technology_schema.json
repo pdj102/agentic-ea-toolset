@@ -1,0 +1,16 @@
+{
+  "object_type": "technology",
+  "version": "1.0",
+  "fields": {
+    "id":               { "type": "string",  "required": true,  "pattern": "TECH-[0-9]{4}" },
+    "name":             { "type": "string",  "required": true },
+    "category":         { "type": "enum",    "required": true,  "values": ["language", "framework", "platform", "database", "cloud_service", "protocol", "tool"] },
+    "status":           { "type": "enum",    "required": true,  "values": ["approved", "conditional", "unapproved", "retired"] },
+    "vendor":           { "type": "string",  "required": false },
+    "version_in_use":   { "type": "string",  "required": false },
+    "approved_domains": { "type": "array",   "required": false, "items": "string", "comment": "If empty, approved for all domains" },
+    "condition_notes":  { "type": "string",  "required": false, "comment": "Required if status is conditional" },
+    "lifecycle_end_date": { "type": "date",  "required": false },
+    "description":      { "type": "string",  "required": true }
+  }
+}
