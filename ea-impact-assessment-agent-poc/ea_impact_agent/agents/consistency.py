@@ -201,7 +201,7 @@ async def run_llm_consistency_check(
                 messages=[{"role": "user", "content": prompt}],
                 tools=[_CONSISTENCY_TOOL],
                 tool_choice={"type": "auto"},
-                timeout=60.0,
+                timeout=120.0,
             )
             for block in response.content:
                 if block.type == "tool_use" and block.name == "report_consistency_findings":

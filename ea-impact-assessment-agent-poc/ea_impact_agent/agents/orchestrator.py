@@ -122,7 +122,7 @@ async def extract_entities(design_doc_text: str, schemas: dict[str, dict]) -> Ex
                 messages=[{"role": "user", "content": f"Extract EA entities from this design document:\n\n{design_doc_text}"}],
                 tools=[_EXTRACTION_TOOL],
                 tool_choice={"type": "auto"},
-                timeout=60.0,
+                timeout=120.0,
             )
             for block in response.content:
                 if block.type == "tool_use" and block.name == "extract_entities":

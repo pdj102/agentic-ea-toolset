@@ -72,65 +72,68 @@ async def _generate_options_for_finding(
     finding: GapFinding | ConflictFinding | ConsistencyFinding | CatalogueQualityIssue,
     schemas: dict[str, dict],
     client: anthropic.AsyncAnthropic,
+    semaphore: "asyncio.Semaphore",
 ) -> FindingWithOptions:
-    finding_type, summary, extra = _finding_to_prompt_text(finding)
-    severity = finding.severity
+    import asyncio
+    async with semaphore:
+        finding_type, summary, extra = _finding_to_prompt_text(finding)
+        severity = finding.severity
 
-    prompt = (
-        "You are an EA Options Generator. For the following EA finding, generate 2-4 tiered "
-        "remediation options using the option types: CONFORM, EXTEND, EXCEPTION, RETIRE.\n\n"
-        f"FINDING TYPE: {finding_type}\n"
-        f"FINDING: {summary}\n"
-        f"SEVERITY: {severity}\n"
-        f"{extra}\n\n"
-        f"RELEVANT SCHEMAS:\n{json.dumps(schemas, indent=2)}\n\n"
-        "Option guidance:\n"
-        "- CONFORM: Change the design to use existing EA-approved components\n"
-        "- EXTEND: Add a new entry to the EA catalogue. For EXTEND, include a schema-valid "
-        "  draft_catalogue_entry (use schema fields; mark unknown values as 'REQUIRED - TO BE CONFIRMED')\n"
-        "- EXCEPTION: Document a governed deviation with rationale and conditions\n"
-        "- RETIRE: Trigger a review of an outdated EA catalogue entry\n\n"
-        "Each option must have a specific, actionable description. Not all option types may be applicable."
-    )
+        prompt = (
+            "You are an EA Options Generator. For the following EA finding, generate 2-4 tiered "
+            "remediation options using the option types: CONFORM, EXTEND, EXCEPTION, RETIRE.\n\n"
+            f"FINDING TYPE: {finding_type}\n"
+            f"FINDING: {summary}\n"
+            f"SEVERITY: {severity}\n"
+            f"{extra}\n\n"
+            f"RELEVANT SCHEMAS:\n{json.dumps(schemas, indent=2)}\n\n"
+            "Option guidance:\n"
+            "- CONFORM: Change the design to use existing EA-approved components\n"
+            "- EXTEND: Add a new entry to the EA catalogue. For EXTEND, include a schema-valid "
+            "  draft_catalogue_entry (use schema fields; mark unknown values as 'REQUIRED - TO BE CONFIRMED')\n"
+            "- EXCEPTION: Document a governed deviation with rationale and conditions\n"
+            "- RETIRE: Trigger a review of an outdated EA catalogue entry\n\n"
+            "Each option must have a specific, actionable description. Not all option types may be applicable."
+        )
 
-    for attempt in range(2):
-        try:
-            response = await client.messages.create(
-                model="claude-sonnet-4-6",
-                max_tokens=2048,
-                messages=[{"role": "user", "content": prompt}],
-                tools=[_OPTIONS_TOOL],
-                tool_choice={"type": "auto"},
-                timeout=60.0,
-            )
-            for block in response.content:
-                if block.type == "tool_use" and block.name == "report_remediation_options":
-                    data = block.input
-                    options = [RemediationOption(**o) for o in data.get("options", [])]
-                    return FindingWithOptions(
-                        finding_type=finding_type,
-                        finding_summary=summary,
-                        severity=severity,
-                        options=options,
-                    )
-        except Exception as exc:
-            if attempt == 0:
-                print(f"  [options] Attempt 1 failed for finding '{summary[:60]}': {exc}. Retrying...")
-                continue
-            print(f"  [options] Failed after 2 attempts: {exc}")
-            return FindingWithOptions(
-                finding_type=finding_type,
-                finding_summary=summary,
-                severity=severity,
-                error="agent-error",
-            )
+        for attempt in range(2):
+            try:
+                response = await client.messages.create(
+                    model="claude-sonnet-4-6",
+                    max_tokens=2048,
+                    messages=[{"role": "user", "content": prompt}],
+                    tools=[_OPTIONS_TOOL],
+                    tool_choice={"type": "auto"},
+                    timeout=120.0,
+                )
+                for block in response.content:
+                    if block.type == "tool_use" and block.name == "report_remediation_options":
+                        data = block.input
+                        options = [RemediationOption(**o) for o in data.get("options", [])]
+                        return FindingWithOptions(
+                            finding_type=finding_type,
+                            finding_summary=summary,
+                            severity=severity,
+                            options=options,
+                        )
+            except Exception as exc:
+                if attempt == 0:
+                    print(f"  [options] Attempt 1 failed for finding '{summary[:60]}': {exc}. Retrying...")
+                    continue
+                print(f"  [options] Failed after 2 attempts: {exc}")
+                return FindingWithOptions(
+                    finding_type=finding_type,
+                    finding_summary=summary,
+                    severity=severity,
+                    error="agent-error",
+                )
 
-    return FindingWithOptions(
-        finding_type=finding_type,
-        finding_summary=summary,
-        severity=severity,
-        error="agent-error: no tool use response",
-    )
+        return FindingWithOptions(
+            finding_type=finding_type,
+            finding_summary=summary,
+            severity=severity,
+            error="agent-error: no tool use response",
+        )
 
 
 async def generate_options(
@@ -140,15 +143,16 @@ async def generate_options(
 ) -> list[FindingWithOptions]:
     import asyncio
 
+    semaphore = asyncio.Semaphore(3)
     client = anthropic.AsyncAnthropic()
     tasks = []
 
     for sf in specialist_findings:
         for finding in sf.gaps + sf.conflicts + sf.catalogue_quality_issues:
-            tasks.append(_generate_options_for_finding(finding, schemas, client))
+            tasks.append(_generate_options_for_finding(finding, schemas, client, semaphore))
 
     for finding in consistency_findings:
-        tasks.append(_generate_options_for_finding(finding, schemas, client))
+        tasks.append(_generate_options_for_finding(finding, schemas, client, semaphore))
 
     if not tasks:
         return []

@@ -131,7 +131,7 @@ async def run_specialist(
                 messages=[{"role": "user", "content": prompt}],
                 tools=[_SPECIALIST_TOOL],
                 tool_choice={"type": "auto"},
-                timeout=60.0,
+                timeout=120.0,
             )
             for block in response.content:
                 if block.type == "tool_use" and block.name == "report_specialist_findings":
