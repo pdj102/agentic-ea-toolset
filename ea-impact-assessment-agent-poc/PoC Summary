@@ -1,0 +1,63 @@
+ ---
+  EA Impact Assessment Agent — PoC Summary
+
+  Purpose
+
+  The PoC demonstrates an AI-assisted approach to EA impact assessment. Rather than relying on manual review of design documents against catalogue records, the tool automates the cross-referencing, gap detection, and rule validation steps that currently consume
+  significant EA team time. The goal is to compress the time between a design being submitted for EA review and structured findings being available to the reviewer.
+
+  What the Tool Does
+
+  The tool accepts a design document (Markdown or PDF) and the EA catalogue files as inputs, then runs a four-stage pipeline:
+
+  1. Entity extraction — an LLM reads the design document and extracts all named systems, data entities, technology choices, and integration patterns into a structured intermediate representation, using the EA schema field definitions as the extraction target.
+  2. Specialist analysis — four parallel agents (Application, Data, Technology, Integration) each compare the extracted entities against their respective catalogue domain, producing matches with confidence scores, gaps where no catalogue entry exists, conflicts where a
+  catalogue entry exists but is in a blocked state, and pre-existing catalogue quality issues.
+  3. Consistency checking — a deterministic rule engine runs all defined relationship rules (REL-001 through REL-005) programmatically against the matched entity graph, then an LLM reasoning pass identifies cross-catalogue issues not covered by explicit rules (domain
+  boundary violations, circular dependencies, ownership conflicts).
+  4. Options generation — for each finding, the tool produces tiered remediation options labelled CONFORM, EXTEND, EXCEPTION, or RETIRE, including schema-valid draft catalogue entries for EXTEND options so that an EA reviewer can approve and register new entries with
+  minimal additional work.
+
+  Output is a structured markdown report and a machine-readable JSON findings file.
+
+  Results on Sample Data
+
+  The tool was validated against a fictional RetailCo scenario — a proposed Customer Loyalty Platform — designed with deliberate EA violations. Running against this sample produced the following in a single automated pass:
+
+  ┌────────────────────────────────────┬────────┐
+  │            Finding Type            │ Count  │
+  ├────────────────────────────────────┼────────┤
+  │ Gaps (missing catalogue entries)   │ 9      │
+  ├────────────────────────────────────┼────────┤
+  │ Rule conflicts                     │ 9      │
+  ├────────────────────────────────────┼────────┤
+  │ Catalogue quality issues           │ 15     │
+  ├────────────────────────────────────┼────────┤
+  │ Cross-catalogue consistency issues │ 4      │
+  ├────────────────────────────────────┼────────┤
+  │ Overall RAG status                 │ 🔴 Red │
+  └────────────────────────────────────┴────────┘
+
+  All targeted violations were correctly detected: integration with a retired application (REL-001), cross-domain data entity ownership conflict (REL-002), use of an unapproved technology — MongoDB (REL-003), and use of a non-approved integration pattern (REL-004). The
+  pre-existing quality defect in the application catalogue (a missing required field on APP-0031) was surfaced in the Executive Summary before the assessment began.
+
+  Beyond the scripted violations, the LLM reasoning pass surfaced additional nuances not explicitly encoded in rules — including ambiguity between the Legacy Promotions Engine and the Promotions Service microservice, and a governance gap on a deprecated integration with
+  no decommission date recorded.
+
+  Technology
+
+  Built in Python 3.11 using the Anthropic Claude API (claude-sonnet-4-6). The multi-agent pattern uses asyncio for parallel execution of specialist agents. All agent outputs are typed via Pydantic models, and a standalone schema_validator utility can be run
+  independently against any catalogue file outside of a full assessment run. No vector store or external dependencies beyond the Anthropic SDK are required.
+
+  Limitations of the PoC
+
+  - Catalogue files are passed directly in the LLM context window; very large catalogues (hundreds of entries) would require embedding-based retrieval in a production implementation.
+  - LLM match confidence scores are self-estimated — useful as a guide but not algorithmically computed.
+  - The tool does not yet integrate with EA tooling (e.g. LeanIX, Ardoq) — the JSON output is structured to support this as a next step.
+
+  Potential Next Steps
+
+  - Connect the JSON output to the live EA catalogue to automate draft entry submission for EXTEND options.
+  - Extend the schema layer with additional object types (Capabilities, Business Processes).
+  - Add a feedback loop so EA reviewers can confirm or override findings, improving future LLM accuracy.
+  - Integrate into the design review intake workflow so assessments are triggered automatically on document submission.
