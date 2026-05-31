@@ -1,7 +1,15 @@
 # EA Impact Assessment Agent — PoC
 
-A multi-agent tool that takes a design document and EA catalogue files, validates them against
-EA object schemas, assesses consistency, and recommends structured alignment options.
+The PoC demonstrates an AI-assisted approach to EA impact assessment. Rather than relying on manual review of design documents against catalogue records, the tool automates the cross-referencing, gap detection, and rule validation steps that currently consume significant EA team time. The goal is to compress the time between a design being submitted for EA review and structured findings being available to the reviewer
+
+ ## What the Tool Does
+ 
+The tool accepts a design document (Markdown or PDF) and the EA catalogue files as inputs, then runs a four-stage pipeline:
+
+1. Entity extraction — an LLM reads the design document and extracts all named systems, data entities, technology choices, and integration patterns into a structured intermediate representation, using the EA schema field definitions as the extraction target.
+2. Specialist analysis — four parallel agents (Application, Data, Technology, Integration) each compare the extracted entities against their respective catalogue domain, producing matches with confidence scores, gaps where no catalogue entry exists, conflicts where a catalogue entry exists but is in a blocked state, and pre-existing catalogue quality issues.
+3. Consistency checking — a deterministic rule engine runs all defined relationship rules (REL-001 through REL-005) programmatically against the matched entity graph, then an LLM reasoning pass identifies cross-catalogue issues not covered by explicit rules (domain boundary violations, circular dependencies, ownership conflicts).
+4. 4. Options generation — for each finding, the tool produces tiered remediation options labelled CONFORM, EXTEND, EXCEPTION, or RETIRE, including schema-valid draft catalogue entries for EXTEND options so that an EA reviewer can approve and register new entries with minimal additional work. Output is a structured markdown report and a machine-readable JSON findings file.
 
 ## Setup
 
